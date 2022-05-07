@@ -1,1 +1,1 @@
-"# GuessTheCity-Backend" 
+# GuessTheCity-Backend
