@@ -13,44 +13,51 @@ import (
 )
 
 type City struct {
-	ID int `json:"rank"`
-	Name string `json:"name"`
-	Country string `json:"country"`
-	Population int `json:"population"`
-}
-
-type Cities struct {
-	Collection []City
+	Rank       int    `json:"rank"`
+	Name       string `json:"name"`
+	Country    string `json:"country"`
+	Population int    `json:"population"`
+	Continent  string `json:"continent"`
+	IsCapital  bool   `json:"isCapital"`
 }
 
 func main() {
+
+	getDataFromJson()
+
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-    AllowOrigins:     []string{"http://localhost:3000"},
-    AllowMethods:     []string{"GET"},
-    AllowHeaders:     []string{"Origin"},
-    ExposeHeaders:    []string{"Content-Length"},
-    AllowCredentials: true,
-    MaxAge: 12 * time.Hour,
-  }))
-
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	router.GET("/citiesAll", getCitiesAll)
 	router.GET("/citiesLarge", getCitiesLarge)
 	router.GET("/citiesPrimate", getCitiesPrimate)
+	router.GET("/citiesCapitals", getCitiesCapitals)
+	router.GET("/citiesEurope", getCitiesEurope)
+	router.GET("/citiesEuropeCapitals", getCitiesEuropeCapitals)
+
 	router.Run("localhost:8080")
 }
 
+// Read json containing cities and return them as an slice
 func getDataFromJson() []City {
 
-	data, err := ioutil.ReadFile("./data.json")
+	data, err := ioutil.ReadFile("data.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	cities := make([]City,0)
-  json.Unmarshal(data, &cities)
+	citiesList := make([]City, 0)
+	json.Unmarshal(data, &citiesList)
 
-	return cities
+	fmt.Printf("%#v", citiesList)
+
+	return citiesList
 }
 
 // Generate a random number between 0 and length of slice
@@ -62,9 +69,9 @@ func random(in []City) int {
 // Returns true if a city belonging to same country already exists in the slice (For returning primate cities)
 func containsCountry(s []City, e City) bool {
 	for _, a := range s {
-			if a.Country == e.Country {
-				return true
-			} 
+		if a.Country == e.Country {
+			return true
+		}
 	}
 	return false
 }
@@ -72,9 +79,9 @@ func containsCountry(s []City, e City) bool {
 // Check if city already exists in slice (Prevent duplicate)
 func containsCity(s []City, e City) bool {
 	for _, a := range s {
-			if a.Name == e.Name {
-				return true
-			} 
+		if a.Name == e.Name {
+			return true
+		}
 	}
 	return false
 }
@@ -108,7 +115,7 @@ func getCitiesAll(c *gin.Context) {
 func getCitiesLarge(c *gin.Context) {
 	var sizedSlice []City
 	for _, element := range getDataFromJson() {
-    if element.Population >= 5000000 {
+		if element.Population >= 5000000 {
 			sizedSlice = append(sizedSlice, element)
 		}
 	}
@@ -117,15 +124,44 @@ func getCitiesLarge(c *gin.Context) {
 
 // Return 5 random primate cities
 func getCitiesPrimate(c *gin.Context) {
-
 	var primateSlice []City
-
 	for _, element := range getDataFromJson() {
-    if !containsCountry(primateSlice, element) {
+		if !containsCountry(primateSlice, element) {
 			primateSlice = append(primateSlice, element)
-		} 
+		}
 	}
 	c.IndentedJSON(http.StatusOK, shuffleAndShorten(primateSlice))
 }
 
+// Return 5 random capitals
+func getCitiesCapitals(c *gin.Context) {
+	var capSlice []City
+	for _, element := range getDataFromJson() {
+		if element.IsCapital {
+			capSlice = append(capSlice, element)
+		}
+	}
+	c.IndentedJSON(http.StatusOK, shuffleAndShorten(capSlice))
+}
 
+// Return 5 random european cities (Exclusing russia because there is soooo many cities)
+func getCitiesEurope(c *gin.Context) {
+	var europeSlice []City
+	for _, element := range getDataFromJson() {
+		if element.Continent == "Europe" && element.Country != "Russia" {
+			europeSlice = append(europeSlice, element)
+		}
+	}
+	c.IndentedJSON(http.StatusOK, shuffleAndShorten(europeSlice))
+}
+
+// Return 5 random european capitals
+func getCitiesEuropeCapitals(c *gin.Context) {
+	var europeSlice []City
+	for _, element := range getDataFromJson() {
+		if element.Continent == "Europe" && element.Country != "Russia" {
+			europeSlice = append(europeSlice, element)
+		}
+	}
+	c.IndentedJSON(http.StatusOK, shuffleAndShorten(europeSlice))
+}
