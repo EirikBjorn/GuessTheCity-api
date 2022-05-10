@@ -13,9 +13,9 @@ import (
 )
 
 type City struct {
-	Rank       int    `json:"rank"`
 	Name       string `json:"name"`
 	Country    string `json:"country"`
+	Rank       int    `json:"rank"`
 	Population int    `json:"population"`
 	Continent  string `json:"continent"`
 	IsCapital  bool   `json:"isCapital"`
@@ -46,17 +46,12 @@ func main() {
 
 // Read json containing cities and return them as an slice
 func getDataFromJson() []City {
-
 	data, err := ioutil.ReadFile("data.json")
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	citiesList := make([]City, 0)
+	var citiesList []City
 	json.Unmarshal(data, &citiesList)
-
-	fmt.Printf("%#v", citiesList)
-
 	return citiesList
 }
 
@@ -95,8 +90,6 @@ func shuffleAndShorten(list []City) []City {
 		if !containsCity(finishedSlice, list[i]) {
 			finishedSlice = append(finishedSlice, list[i])
 			i++
-		} else {
-			fmt.Print("Duplicate")
 		}
 	}
 	return finishedSlice
@@ -115,7 +108,7 @@ func getCitiesAll(c *gin.Context) {
 func getCitiesLarge(c *gin.Context) {
 	var sizedSlice []City
 	for _, element := range getDataFromJson() {
-		if element.Population >= 5000000 {
+		if element.Population >= 10000000 {
 			sizedSlice = append(sizedSlice, element)
 		}
 	}
@@ -159,7 +152,7 @@ func getCitiesEurope(c *gin.Context) {
 func getCitiesEuropeCapitals(c *gin.Context) {
 	var europeSlice []City
 	for _, element := range getDataFromJson() {
-		if element.Continent == "Europe" && element.Country != "Russia" {
+		if element.Continent == "Europe" && element.IsCapital {
 			europeSlice = append(europeSlice, element)
 		}
 	}
