@@ -749,7 +749,7 @@
     "rank": 98,
     "population": 4297877,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Shijiazhuang",
@@ -1165,7 +1165,7 @@
     "rank": 150,
     "population": 3153781,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Milan",
@@ -1229,7 +1229,7 @@
     "rank": 158,
     "population": 3010209,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Surabaya",
@@ -1253,7 +1253,7 @@
     "rank": 161,
     "population": 2986162,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Zhongshan",
@@ -1829,7 +1829,7 @@
     "rank": 238,
     "population": 2109631,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Multan",
@@ -1965,7 +1965,7 @@
     "rank": 255,
     "population": 1960023,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Valencia",
@@ -2173,7 +2173,7 @@
     "rank": 281,
     "population": 1794532,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Hamburg",
@@ -2205,7 +2205,7 @@
     "rank": 285,
     "population": 1785294,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Palembang",
@@ -3109,7 +3109,7 @@
     "rank": 404,
     "population": 1327762,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Mianyang Sichuan",
@@ -3157,7 +3157,7 @@
     "rank": 410,
     "population": 1318085,
     "continent": "Europe",
-    "isCapital": false
+    "isCapital": true
   },
   {
     "name": "Bareilly",
