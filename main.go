@@ -29,7 +29,7 @@ func main() {
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://guessthecity-95a9b.web.app", "https://guessthecity.com", "http://guessthecity.com", "http://89.10.220.223"},
+		AllowOrigins:     []string{"https://guessthecity-95a9b.web.app", "https://guessthecity.com", "http://guessthecity.com", "http://localhost:3000"},
 		AllowMethods:     []string{"GET"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
