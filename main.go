@@ -60,7 +60,7 @@ func main() {
 		})
 	})
 
-	router.Run("localhost:8080")
+	router.Run()
 }
 
 // Read json containing cities and return them as an slice
