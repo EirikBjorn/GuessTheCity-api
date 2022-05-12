@@ -24,9 +24,7 @@ type City struct {
 }
 
 func main() {
-
 	getDataFromJson()
-
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://guessthecity-95a9b.web.app", "https://guessthecity.com", "http://guessthecity.com", "http://localhost:3000"},
@@ -44,7 +42,6 @@ func main() {
 	router.GET("/citiesEuropeCapitals", getCitiesEuropeCapitals)
 	router.GET("/citiesUS", getCitiesUS)
 	router.GET("/citiesNA", getCitiesNA)
-
 	router.GET("/answer/:answer/:rank", func(c *gin.Context) {
 		ans, rankStr := c.Param("answer"), c.Param("rank")
 		rank, err := strconv.Atoi(rankStr)
@@ -59,7 +56,6 @@ func main() {
 			"message": correct,
 		})
 	})
-
 	router.Run()
 }
 
@@ -108,6 +104,7 @@ func shuffleAndShorten(list []City) []City {
 	return finishedSlice
 }
 
+// Set fields to random values to prevent cheating
 func antiCheat(s []City) []City {
 	var antiCheatSlice []City
 	for _, element := range s {
