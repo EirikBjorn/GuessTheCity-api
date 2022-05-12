@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -40,6 +42,23 @@ func main() {
 	router.GET("/citiesCapitals", getCitiesCapitals)
 	router.GET("/citiesEurope", getCitiesEurope)
 	router.GET("/citiesEuropeCapitals", getCitiesEuropeCapitals)
+	router.GET("/citiesUS", getCitiesUS)
+	router.GET("/citiesNA", getCitiesNA)
+
+	router.GET("/answer/:answer/:rank", func(c *gin.Context) {
+		ans, rankStr := c.Param("answer"), c.Param("rank")
+		rank, err := strconv.Atoi(rankStr)
+		correct := false
+		fmt.Print(err)
+		for _, i := range getDataFromJson() {
+			if strings.EqualFold(ans, i.Name) && rank == i.Rank {
+				correct = true
+			}
+		}
+		c.JSON(200, gin.H{
+			"message": correct,
+		})
+	})
 
 	router.Run("localhost:8080")
 }
@@ -53,12 +72,6 @@ func getDataFromJson() []City {
 	var citiesList []City
 	json.Unmarshal(data, &citiesList)
 	return citiesList
-}
-
-// Generate a random number between 0 and length of slice
-func random(in []City) int {
-	randomIndex := rand.Intn(len(in))
-	return randomIndex
 }
 
 // Returns true if a city belonging to same country already exists in the slice (For returning primate cities)
@@ -95,66 +108,97 @@ func shuffleAndShorten(list []City) []City {
 	return finishedSlice
 }
 
-// Return 5 random cities
-func getCitiesAll(c *gin.Context) {
-	var finishedSlice []City
-	for i := 0; i < 5; i++ {
-		finishedSlice = append(finishedSlice, getDataFromJson()[random(getDataFromJson())])
+func antiCheat(s []City) []City {
+	var antiCheatSlice []City
+	for _, element := range s {
+		element.Name = "No cheating ;)"
+		element.Country = "No cheating ;)"
+		element.Population = 1337
+		element.Continent = "No cheating ;)"
+		element.IsCapital = false
+		antiCheatSlice = append(antiCheatSlice, element)
 	}
-	c.IndentedJSON(http.StatusOK, finishedSlice)
+	return antiCheatSlice
 }
 
-// Return 5 random cities with a population above 5 million
+// Return 5 random cities
+func getCitiesAll(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(getDataFromJson())))
+}
+
+// Return 5 random cities with a population above 10 million
 func getCitiesLarge(c *gin.Context) {
-	var sizedSlice []City
+	var finishedSlice []City
 	for _, element := range getDataFromJson() {
 		if element.Population >= 10000000 {
-			sizedSlice = append(sizedSlice, element)
+			finishedSlice = append(finishedSlice, element)
 		}
 	}
-	c.IndentedJSON(http.StatusOK, shuffleAndShorten(sizedSlice))
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
 }
 
 // Return 5 random primate cities
 func getCitiesPrimate(c *gin.Context) {
-	var primateSlice []City
+	var finishedSlice []City
 	for _, element := range getDataFromJson() {
-		if !containsCountry(primateSlice, element) {
-			primateSlice = append(primateSlice, element)
+		if !containsCountry(finishedSlice, element) {
+			finishedSlice = append(finishedSlice, element)
 		}
 	}
-	c.IndentedJSON(http.StatusOK, shuffleAndShorten(primateSlice))
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
 }
 
 // Return 5 random capitals
 func getCitiesCapitals(c *gin.Context) {
-	var capSlice []City
+	var finishedSlice []City
 	for _, element := range getDataFromJson() {
 		if element.IsCapital {
-			capSlice = append(capSlice, element)
+			finishedSlice = append(finishedSlice, element)
 		}
 	}
-	c.IndentedJSON(http.StatusOK, shuffleAndShorten(capSlice))
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
 }
 
 // Return 5 random european cities (Exclusing russia because there is soooo many cities)
 func getCitiesEurope(c *gin.Context) {
-	var europeSlice []City
+	var finishedSlice []City
 	for _, element := range getDataFromJson() {
 		if element.Continent == "Europe" && element.Country != "Russia" {
-			europeSlice = append(europeSlice, element)
+			finishedSlice = append(finishedSlice, element)
 		}
 	}
-	c.IndentedJSON(http.StatusOK, shuffleAndShorten(europeSlice))
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
 }
 
 // Return 5 random european capitals
 func getCitiesEuropeCapitals(c *gin.Context) {
-	var europeSlice []City
+	var finishedSlice []City
 	for _, element := range getDataFromJson() {
 		if element.Continent == "Europe" && element.IsCapital {
-			europeSlice = append(europeSlice, element)
+			finishedSlice = append(finishedSlice, element)
 		}
 	}
-	c.IndentedJSON(http.StatusOK, shuffleAndShorten(europeSlice))
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
+}
+
+// Return 5 random US Cities
+func getCitiesUS(c *gin.Context) {
+	var finishedSlice []City
+	for _, element := range getDataFromJson() {
+		if element.Country == "United States" {
+			finishedSlice = append(finishedSlice, element)
+		}
+	}
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
+}
+
+// Return 5 random US Cities
+func getCitiesNA(c *gin.Context) {
+	var finishedSlice []City
+	for _, element := range getDataFromJson() {
+		if element.Continent == "North America" {
+			finishedSlice = append(finishedSlice, element)
+		}
+	}
+	c.IndentedJSON(http.StatusOK, antiCheat(shuffleAndShorten(finishedSlice)))
 }
